@@ -20,7 +20,7 @@ export default function Form(props) {
     } else {
       setError("")
     }
-  
+
     props.onSave(name, interviewer);
   };
 
