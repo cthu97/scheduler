@@ -14,25 +14,64 @@ export default function Application(props) {
     interviewers: {}
   });
 
-  const appointments = getAppointmentsForDay(state, state.day);
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const dailyInterviewers = getInterviewersForDay(state, state.day);
 
-  const interviewersForDay = getInterviewersForDay(state, state.day);
+  function bookInterview(id, interview) {
+    console.log(`bookinterview ${JSON.stringify(id)}, ${JSON.stringify(interview)}`)
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
 
-  //const dailyAppointments = getAppointmentsForDay(state, state.day);
-  const schedule = appointments.map((appointment) => {
+    return axios.put(`/api/appointments/${id}`, {
+      interview: { ...interview }
+    }).then((res) => {
+        setState({ ...state, appointments })
+      })
+      .catch(err => {
+        console.log(err.stack)
+      })
+  }
+  
+  console.log("interviewerforDay:", dailyInterviewers)
+  const schedule = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview);
-
+    console.log(`interview post map: ${JSON.stringify(interview)}`)
     return (
       <Appointment
         key={appointment.id}
         id={appointment.id}
         time={appointment.time}
         interview={interview}
-        interviewers={interviewersForDay}
+        interviewers={dailyInterviewers}
+        bookInterview={bookInterview}
+/*         cancelInterview={cancelInterview} */
       />
     );
   });
 
+/* 
+  const cancelInterview = (id) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    }
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    }
+
+    return axios.delete(`/api/appointments/${id}`)
+      .then(res => {
+        setState({...state, appointments})
+      })
+  } */
   const setDay = ((day) => { setState((prev) => ({ ...prev, day: day })) })
 
   useEffect(() => {
@@ -60,7 +99,8 @@ export default function Application(props) {
             key={state.day.id}
             days={state.days}
             day={state.day}
-            setDay={setDay} />
+            setDay={setDay} 
+            />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"

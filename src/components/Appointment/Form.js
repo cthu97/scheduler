@@ -7,11 +7,15 @@ export default function Form(props) {
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
   const [error, setError] = useState("");
 
+
   function reset() {
-    setName("")
-    setInterviewer(null)
-    props.onCancel()
-  };
+    setName('');
+    setInterviewer(null);
+  }
+  function cancel() {
+    reset();
+    props.onCancel();
+  }
 
   function validate() {
     if (name === "" || interviewer === null) {
@@ -20,7 +24,6 @@ export default function Form(props) {
     } else {
       setError("")
     }
-
     props.onSave(name, interviewer);
   };
 
@@ -43,7 +46,7 @@ export default function Form(props) {
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
-          <Button danger onClick={reset}>Cancel</Button>
+          <Button danger onClick={cancel}>Cancel</Button>
           <Button confirm onClick={e => {
             validate();
           }}>Save</Button>
