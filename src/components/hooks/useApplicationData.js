@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 
@@ -11,7 +11,6 @@ export default function useApplicationData() {
   })
 
   function bookInterview(id, interview) {
-    console.log(`bookinterview ${JSON.stringify(id)}, ${JSON.stringify(interview)}`)
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }

@@ -1,4 +1,4 @@
-import React, { usEffect, useState } from 'react';
+import React from 'react';
 import "./styles.scss";
 import Header from "./Header";
 import Show from "./Show";
@@ -45,7 +45,7 @@ export default function Appointment(props) {
   };
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && (
