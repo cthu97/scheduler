@@ -5,6 +5,7 @@ import { getAppointmentsForDay, getInterview, getInterviewersForDay } from "help
 import useApplicationData from "./hooks/useApplicationData";
 import "components/Application.scss";
 
+
 export default function Application(props) {
   const {
     state,
@@ -53,7 +54,7 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
+      <section className="schedule" data-testid="appointment">
         {appointments}
         <Appointment
           id='last'

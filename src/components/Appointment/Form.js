@@ -12,18 +12,23 @@ export default function Form(props) {
     setName('');
     setInterviewer(null);
   }
+  
   function cancel() {
     reset();
+    console.log('onCancel:', props.onCancel())
     props.onCancel();
   }
 
   function validate() {
-    if (name === "" || interviewer === null) {
-      setError("Student name and interviewer cannot be blank");
+    if (name === "") {
+      setError("Student name cannot be blank");
       return;
-    } else {
-      setError("")
     }
+    else if (!interviewer) {
+      setError("Please choose an interviewer.")
+      return;
+    }
+    setError("")
     props.onSave(name, interviewer);
   };
 
