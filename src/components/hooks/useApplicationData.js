@@ -32,11 +32,13 @@ export default function useApplicationData() {
       })
   }
    
-
+  // update spots remaining for selected day 
   const updateSpots = () => {
     setState(prev => {
       const appointmentsForDay = getAppointmentsForDay(prev, prev.day);
       let count = appointmentsForDay.length;
+
+      // count how many appointments there are per day then subtract each day accordingly
       appointmentsForDay.forEach((appointment) => {
         if (appointment.interview) {
           count--;
