@@ -22,15 +22,18 @@ export default function useApplicationData() {
 
     return axios.put(`/api/appointments/${id}`, {
       interview: { ...interview }
-    }).then((res) => {
-      setState({ ...state, appointments })
-      setState(prev => updateSpots({ ...prev, appointments }))
-    })
-      .catch(err => {
+    }).then((response) => {
+      setState({
+        ...state,
+        appointments
+      })
+        .catch(err => {
         console.log(err.stack)
       })
+    })
   }
-
+ 
+  
   const updateSpots = (state, day) => {
     const dayObj = state.days.find(d => d.name === day || state.day);
     const dayIndex = state.days.findIndex(d => d.name === day || state.day);
