@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { getAppointmentsForDay } from "helpers/selectors";
 
 export default function useApplicationData() {
   const [state, setState] = useState({
@@ -20,35 +20,39 @@ export default function useApplicationData() {
       [id]: appointment
     };
 
+
     return axios.put(`/api/appointments/${id}`, {
       interview: { ...interview }
-    }).then((response) => {
-      setState({
-        ...state,
-        appointments
-      })
-        .catch(err => {
+    }).then((res) => {
+      setState({ ...state, appointments })
+      updateSpots()
+    })
+      .catch(err => {
         console.log(err.stack)
       })
+  }
+   
+
+  const updateSpots = () => {
+    setState(prev => {
+      const appointmentsForDay = getAppointmentsForDay(prev, prev.day);
+      let count = appointmentsForDay.length;
+      appointmentsForDay.forEach((appointment) => {
+        if (appointment.interview) {
+          count--;
+        }
+      })
+
+      return {
+        ...prev,
+        ...prev.days.forEach((day) => {
+          if (day.name === prev.day) {
+            day.spots = count
+          }
+        })
+      }
     })
   }
- 
-  
-  const updateSpots = (state, day) => {
-    const dayObj = state.days.find(d => d.name === day || state.day);
-    const dayIndex = state.days.findIndex(d => d.name === day || state.day);
-    const apptmentID = dayObj.appointments;
-    const freeSpots = apptmentID.filter(id => !state.appointments[id].interview);
-    const totalSpots = freeSpots.length;
-    const stateUpdate = { ...state }
-    const dayUpdate = { ...dayObj }
-
-    stateUpdate.days = [...state.days]
-    dayUpdate.spots = totalSpots;
-    stateUpdate.days[dayIndex] = dayUpdate;
-
-    return stateUpdate;
-  };
 
   const cancelInterview = (id) => {
     const appointment = {
@@ -64,7 +68,7 @@ export default function useApplicationData() {
     return axios.delete(`/api/appointments/${id}`)
       .then(res => {
         setState({ ...state, appointments })
-        setState(prev => updateSpots({ ...prev, appointments }))
+        updateSpots()
       })
   }
 
