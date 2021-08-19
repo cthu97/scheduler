@@ -20,16 +20,13 @@ export default function useApplicationData() {
       [id]: appointment
     };
 
-
+    
     return axios.put(`/api/appointments/${id}`, {
       interview: { ...interview }
     }).then((res) => {
       setState({ ...state, appointments })
       updateSpots()
     })
-      .catch(err => {
-        console.log(err.stack)
-      })
   }
    
   // update spots remaining for selected day 

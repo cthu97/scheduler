@@ -33,12 +33,12 @@ export default function Appointment(props) {
       student: name,
       interviewer
     }
-    Promise.resolve(props.bookInterview(props.id, interview))
+    props.bookInterview(props.id, interview)
       .then(res => transition(SHOW))
-      .catch(error => transition(ERROR_SAVE, true));
+      .catch(err => transition(ERROR_SAVE, true));
   }
 
-  // confirming delete to destroy interview
+
   const destroy = () => {
     transition(DELETING, true);
     props.cancelInterview(props.id)
@@ -46,18 +46,16 @@ export default function Appointment(props) {
       .catch(err => transition(ERROR_DELETE, true))
   };
   
-
   return (
     <article className="appointment" data-testid="appointment">
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-      {mode === SHOW && (
+      {mode === SHOW && props.interview && (
         <Show
-          student={props.interview.student}
-          interviewer={props.interview.interviewer.name}
-          onDelete={() => transition(CONFIRM)}
-          onEdit={() => transition(EDIT)}
-        />
+        student={props.interview.student}
+        interviewer={props.interview.interviewer && props.interview.interviewer.name} 
+        onEdit={() => transition(EDIT)} 
+        onDelete={() => transition(CONFIRM)} />
       )}
       {mode === CREATE && (
         <Form
@@ -78,14 +76,14 @@ export default function Appointment(props) {
           onCancel={back}
         />
       )}
-      {mode === EDIT && (
-        <Form
-          name={props.interview.student}
-          interviewer={props.interview.interviewer.id}
-          interviewers={props.interviewers}
-          onCancel={back}
-          onSave={save}
-        />
+     {mode === EDIT && (
+     <Form 
+       name={props.interview.student} 
+       interviewers={props.interviewers} 
+       interviewer={props.interview.interviewer ? props.interview.interviewer.id : null} 
+       onSave={save} 
+       onCancel={back}
+       />
       )}
       {mode === ERROR_SAVE && (
         <Error
